@@ -1,0 +1,100 @@
+<html>
+  <head></head>
+
+  <body style="position: fixed">
+    <iframe
+      style="display: block; width: 100%; height: 100%; border: none"
+      src="https://www.tradingview.com/"
+    ></iframe>
+
+    <script>
+      window.__tvb__strategy = "0";
+
+      window.__tvb__symbol = document.evaluate(
+        "//div[@id='header-toolbar-symbol-search']",
+        document,
+        null,
+        XPathResult.STRING_TYPE,
+        null
+      ).stringValue;
+
+      window.__tvb__order = `${window.__tvb__strategy} BUY(${window.__tvb__symbol}) O0 H0 L0 C0`;
+
+      document.addEventListener("click", function (e) {
+        window.__tvb__symbol = document.evaluate(
+          "//div[@id='header-toolbar-symbol-search']",
+          document,
+          null,
+          XPathResult.STRING_TYPE,
+          null
+        ).stringValue;
+
+        window.__tvb__order = `${window.__tvb__strategy} BUY(${window.__tvb__symbol}) O0 H0 L0 C0`;
+        console.log(`Symbol Changed to ${window.__tvb__symbol}.`);
+      });
+
+      document.addEventListener("keyup", function (e) {
+        console.log(`Key.${e.key} pressed.`);
+
+        if (e.key == " ") {
+          window.__tvb__symbol = document.evaluate(
+            "//div[@id='header-toolbar-symbol-search']",
+            document,
+            null,
+            XPathResult.STRING_TYPE,
+            null
+          ).stringValue;
+
+          window.__tvb__order = `${window.__tvb__strategy} BUY(${window.__tvb__symbol}) O0 H0 L0 C0`;
+          console.log(`Symbol Changed to ${window.__tvb__symbol}.`);
+        }
+
+        if (parseInt(e.key) < 10) {
+          window.__tvb__strategy = e.key;
+          console.log(`window.__tvb__strategy --> ${window.__tvb__strategy}`);
+          window.__tvb__order = `${window.__tvb__strategy} BUY(${window.__tvb__symbol}) O0 H0 L0 C0`;
+        }
+
+        const __tvb__OpenValue = document.evaluate(
+          "//div[text()='O']/..",
+          document,
+          null,
+          XPathResult.STRING_TYPE,
+          null
+        ).stringValue;
+        const __tvb__HighValue = document.evaluate(
+          "//div[text()='H']/..",
+          document,
+          null,
+          XPathResult.STRING_TYPE,
+          null
+        ).stringValue;
+        const __tvb__LowValue = document.evaluate(
+          "//div[text()='L']/..",
+          document,
+          null,
+          XPathResult.STRING_TYPE,
+          null
+        ).stringValue;
+        const __tvb__CloseValue = document.evaluate(
+          "//div[text()='C']/..",
+          document,
+          null,
+          XPathResult.STRING_TYPE,
+          null
+        ).stringValue;
+
+        switch (e.key) {
+          case "Enter":
+            window.__tvb__order = `${window.__tvb__strategy} BUY(${window.__tvb__symbol}) ${__tvb__OpenValue} ${__tvb__HighValue} ${__tvb__LowValue} ${__tvb__CloseValue}`;
+            console.log(`window.__tvb__order --> ${window.__tvb__order}`);
+            break;
+          case "Backspace":
+            window.__tvb__order = `${window.__tvb__strategy} SELL(${window.__tvb__symbol}) ${__tvb__OpenValue} ${__tvb__HighValue} ${__tvb__LowValue} ${__tvb__CloseValue}`;
+            console.log(`window.__tvb__order --> ${window.__tvb__order}`);
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>
